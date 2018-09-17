@@ -1,0 +1,34 @@
+<!-- Sidebar -->
+<div *ngIf="!isLoading">
+  <sidebar-filter [diffs]="diffs"
+                  [searchKeyword]="searchKeyword"
+                  (onFiltering)="(diffs=$event) && this.setPage(1)"
+                  (isLoading)="isLoading = $event">
+  </sidebar-filter>
+</div>
+
+
+<!-- /#sidebar-wrapper -->
+
+<!-- Page Content -->
+<div *ngIf="isLoading">
+  Loading Diffs ...
+</div>
+<div *ngIf="!isLoading">
+
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <pager [data]="diffs"
+             (pagedItems)="pagedDiffItems = $event">
+
+      </pager>
+      <h1>Results: {{diffs.length}}</h1>
+      <div *ngFor="let diff of pagedDiffItems; let diffIndex = index">
+        <card-item [data]="diff"
+                   [dataIndex]="diffIndex"
+                   [type]="'diff'">
+        </card-item>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+.element {
+  z-index: 9999;
+  background-color: rgba(201, 210, 222, 1);
+  font-size: 11px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.element:hover{
+  z-index: 9999;
+  background-color: rgb(163, 170, 180);
+  cursor: pointer;
+}

@@ -1,0 +1,45 @@
+<!-- Sidebar -->
+<sidebar-filter [diffs]="changes"
+                (onFiltering)="changes=$event"
+                (isLoading)="isLoading = $event">
+</sidebar-filter>
+
+<!-- /#sidebar-wrapper -->
+
+<div>
+  <div id="page-content-wrapper">
+
+    <div class="container-fluid">
+      <nav aria-label="...">
+        <!-- pager -->
+        <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(1)">First</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+            <a class="page-link" (click)="setPage(pager.totalPages)">Last</a>
+          </li>
+        </ul>
+      </nav>
+      <div *ngFor="let change of pagedChangetems; let clusterIndex = index">
+        <div style="margin-bottom: 60px">
+          <change-element [change]="getChange(clusterIndex)"></change-element>
+          <div *ngFor="let contribution of change; let dataRowIndex = index">
+            <card-item [data]="contribution"
+                       [dataIndex]="dataRowIndex"
+                       [type]="'word2vec'"></card-item>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

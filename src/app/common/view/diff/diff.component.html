@@ -1,0 +1,23 @@
+<!--
+<change-element-list [changes]="changes"></change-element-list>
+-->
+<div [innerHtml]="outputHtml"></div>
+
+<div class="text-center">
+
+  <button class="btn btn-primary" (click)="showFileA()">
+    Show File Before
+  </button>
+  <button class="btn btn-primary" (click)="showFileB()">
+    Show File After
+
+  </button>
+</div>
+
+<div *ngIf="fileA">
+  <pre><code highlight [code]="fileA"></code></pre>
+</div>
+
+<div *ngIf="fileB">
+  <pre><code highlight [code]="fileA"></code></pre>
+</div>

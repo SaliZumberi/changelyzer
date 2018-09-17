@@ -1,0 +1,37 @@
+<!-- Page Content -->
+<div *ngIf="isLoading">
+  Loading Diffs ...
+</div>
+<div *ngIf="!isLoading">
+    <div class="btn-group btn-group-toggle" style="    align-items: center;
+    display: flex;" data-toggle="buttons">
+      <label (click)="selectChange(changes, 'all')" class="btn btn-secondary"
+             [ngClass]="{'active': selectedChanges?.length == changes?.length}">
+        <input type="radio" name="options" id="option1" autocomplete="off" checked> All
+      </label>
+      <label (click)="selectChange(changesWhat, 'what')" class="btn btn-secondary"
+             [ngClass]="{'active': selectedChanges?.length ==changesWhat?.length}">
+        <input type="radio" name="options" id="option2" autocomplete="off" checked> What
+      </label>
+      <label (click)="selectChange(changesWhere,'where')" class="btn btn-secondary"
+             [ngClass]="{'active': selectedChanges?.length ==changesWhere?.length}">
+        <input type="radio" name="options" id="option3" autocomplete="off"> Where
+      </label>
+    </div>
+    <div *ngIf="selectedChanges">
+      <pager [data]="selectedChanges"
+             [itemsPerPage]="50"
+             (pagedItems)="pagedChanges = $event">
+      </pager>
+      <h1>Results: {{selectedChanges.length}}</h1>
+      <div *ngFor="let change of pagedChanges; let changeIndex = index">
+        <card-item [data]="change"
+                   [dataIndex]="changeIndex"
+                   [type]="'change'"
+                   [selectedChangeType]="selectedChangeType"
+                   (showDiffs)="showDiffs($event)"
+                   [collapsedItems]="0">
+        </card-item>
+      </div>
+    </div>
+</div>

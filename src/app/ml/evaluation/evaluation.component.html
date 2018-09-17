@@ -1,0 +1,11 @@
+<div>
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="form-check form-check-inline" *ngFor="let score of scores; let scoreIndex = index">
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+               [(ngModel)]="score.isChecked" (change)="selectCheckbox(scoreIndex)">
+        <label class="form-check-label" for="inlineRadio1">{{score.name}}</label>
+      </div>
+    </div>
+  </div>
+</div>

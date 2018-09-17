@@ -1,0 +1,49 @@
+<!-- Sidebar -->
+<!--<sidebar-filter [diffs]="changes"
+                (onFiltering)="changes=$event"
+                (isLoading)="isLoading = $event">
+</sidebar-filter>-->
+
+<!-- /#sidebar-wrapper -->
+
+<!-- Page Content -->
+
+<div>
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <div class="btn-group btn-group-toggle" style="    align-items: center;
+    display: flex;" data-toggle="buttons">
+        <label (click)="showTopic()" class="btn btn-secondary" [ngClass]="{'active': ldaType =='topics'}">
+          <input type="radio" name="options" id="option1" autocomplete="off" checked> Topics
+        </label>
+        <label (click)="showDocs()" class="btn btn-secondary" [ngClass]="{'active': ldaType =='documents'}">
+          <input type="radio" name="options" id="option2" autocomplete="off"> Docs
+        </label>
+      </div>
+      <div *ngIf="isLoading">
+        Loading Diffs ...
+      </div>
+      <div  *ngIf="!isLoading">
+        <div *ngFor="let topic of selection; let topicIndex = index">
+          <div [ngSwitch]="ldaType">
+            <div *ngSwitchCase="'topics'">
+              <card-group [dataIndex]="topicIndex"
+                          [data]="topic"
+                          [groupType]="'topics'"
+                          [collapsedItems]="1">
+              </card-group>
+            </div>
+            <div *ngSwitchCase="'documents'">
+              <card-group [dataIndex]="topicIndex"
+                          [data]="topic"
+                          [groupType]="'documents'"
+                          [collapsedItems]="1">
+              </card-group>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

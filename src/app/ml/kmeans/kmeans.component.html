@@ -1,0 +1,32 @@
+<!-- Sidebar -->
+<sidebar-filter [diffs]="changes"
+                (onFiltering)="changes=$event"
+                (isLoading)="isLoading = $event">
+</sidebar-filter>
+
+<!-- /#sidebar-wrapper -->
+
+<!-- Page Content -->
+<div *ngIf="isLoading">
+  Loading Diffs ...
+</div>
+<div *ngIf="!isLoading">
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <button class="btn btn-primary" (click)="showElementsCluster()">Element K-Means</button>
+      <button class="btn btn-primary" (click)="showChangesCluster()">Change K-Means</button>
+      <button class="btn btn-primary" (click)="showDiffsCluster()">Diff K-Mean</button>
+      <h1 *ngIf="selectedKMeans">Results: {{selectedKMeans.length}} Clusters found</h1>
+      <h1 *ngIf="!selectedKMeans">Select a Category</h1>
+
+      <div *ngFor="let cluster of selectedKMeans; let clusterIndex = index">
+        <card-group [dataIndex]="clusterIndex"
+                    [data]="cluster"
+                    [groupType]="clusterType"
+                    [collapsedItems]="1">
+        </card-group>
+
+      </div>
+    </div>
+  </div>
+</div>

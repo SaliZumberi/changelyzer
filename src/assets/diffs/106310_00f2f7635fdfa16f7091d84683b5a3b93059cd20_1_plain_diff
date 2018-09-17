@@ -1,0 +1,36 @@
+diff --git a/src/test/java/org/junit/rules/ExpectedExceptionTest.java b/src/test/java/org/junit/rules/ExpectedExceptionTest.java
+index fc548a8..8a4bba1 100644
+--- a/src/test/java/org/junit/rules/ExpectedExceptionTest.java
++++ b/src/test/java/org/junit/rules/ExpectedExceptionTest.java
+@@ -86,7 +86,10 @@ public class ExpectedExceptionTest {
+                {
+                        UseCustomMessageWithPlaceHolder.class,
+                        hasSingleFailureWithMessage(ARBITRARY_MESSAGE
+                                + " - an instance of java.lang.IllegalArgumentException") {+},+}
+{+                {+}
+{+                        ErrorCollectorShouldFailAlthoughExpectedExceptionDoesNot.class,+}
+{+                        hasSingleFailureWithMessage(ARBITRARY_MESSAGE)+} }
+        });
+    }
+
+@@ -364,4 +367,20 @@ public class ExpectedExceptionTest {
+            thrown.reportMissingExceptionWithMessage(ARBITRARY_MESSAGE);
+        }
+    }
+
+    {+public static class ErrorCollectorShouldFailAlthoughExpectedExceptionDoesNot {+}
+
+{+        @Rule+}
+{+        public ErrorCollector collector = new ErrorCollector();+}
+
+{+        @Rule(order = Integer.MAX_VALUE)+}
+{+        public ExpectedException thrown = ExpectedException.none();+}
+
+{+        @Test+}
+{+        public void test() {+}
+{+            collector.addError(new AssertionError(ARBITRARY_MESSAGE));+}
+{+            thrown.expect(Exception.class);+}
+{+            throw new RuntimeException();+}
+{+        }+}
+{+    }+}
+}

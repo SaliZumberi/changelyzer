@@ -1,0 +1,74 @@
+<div>
+  <div class="card">
+    <div class="card-header" (click)="toggleCollapse()">
+      <b>#{{dataIndex +1}}</b>
+      <span
+        class="badge badge-primary badge-pill float-right"> {{data.length}} Items </span>
+      <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+      <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+    </div>
+    <div [ngSwitch]="groupType" class="collapse" [class.show]="show">
+      <div *ngIf="show" class="card-body">
+        <div *ngSwitchCase="'diffs'">
+          <div *ngFor="let datarow of data; let dataRowIndex = index">
+            <card-item [data]="datarow"
+                       [dataIndex]="dataRowIndex"
+                       [type]="'diff'"
+                       [collapsedItems]="1"
+            ></card-item>
+          </div>
+        </div>
+        <div *ngSwitchCase="'elements'">
+          <div *ngFor="let datarow of data; let dataRowIndex = index">
+            <card-item [data]="datarow"
+                       [dataIndex]="dataRowIndex"
+                       [type]="'element'"
+            ></card-item>
+          </div>
+        </div>
+        <div *ngSwitchCase="'changes'">
+          <div *ngFor="let datarow of data; let dataRowIndex = index">
+
+            <card-item [data]="datarow"
+                       [dataIndex]="dataRowIndex"
+                       [type]="'change'"></card-item>
+          </div>
+        </div>
+        <div *ngSwitchCase="'topics'">
+          <div *ngFor="let contribution of data.changeContributions; let dataRowIndex = index">
+            <div *ngIf="isMinContribution(contribution.percentage)">
+              <card-item [data]="contribution"
+                         [dataIndex]="dataRowIndex"
+                         [type]="'topic'"></card-item>
+            </div>
+          </div>
+          <div *ngFor="let contribution of data.diffContribution; let dataRowIndex = index">
+            <div *ngIf="dataRowIndex < 10">
+              {{contribution.percentage}}%
+              <card-item [data]="contribution.obj"
+                         [dataIndex]="dataRowIndex"
+                         [type]="'diff'"></card-item>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'documents'">
+          <div *ngFor="let contribution of data.changeContributions; let dataRowIndex = index">
+            <div *ngIf="isMinContribution(contribution.percentage) && dataRowIndex < 10">
+              <card-item [data]="contribution"
+                         [dataIndex]="dataRowIndex"
+                         [type]="'documents'"></card-item>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="'word2vec'">
+          <div *ngFor="let contribution of data; let dataRowIndex = index">
+            {{contribution.percentage}}%
+            <card-item [data]="contribution.obj"
+                       [dataIndex]="dataRowIndex"
+                       [type]="'change'"></card-item>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

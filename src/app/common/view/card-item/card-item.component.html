@@ -1,0 +1,143 @@
+<div [ngSwitch]="type">
+  <div *ngSwitchCase="'diff'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <change-element-list [changes]="data.changes"></change-element-list>
+        <span
+          class="badge badge-primary badge-pill float-right">{{data.changes.length}} Changes</span>
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <div *ngIf="show" class="card-body">
+          <app-diff [index]="dataIndex"
+                    [basePath]="data.base"
+                    [vectorized]="data.vectorized"
+                    [changes]="data.changes"
+          ></app-diff>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="'change'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <change-element [change]="data"></change-element>
+        <button (click)="showDiffs.emit(data)" class="btn btn-secondary btn-sm float-right">{{data.count}}
+          Occurrences
+        </button>
+
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <div *ngIf="show && !isLoading" class="card-body">
+          Total {{diffExamples.length}} Examples
+          <pager [data]="diffExamples"
+                 (pagedItems)="pagedDiffItems = $event">
+          </pager>
+          <div *ngFor="let diff of pagedDiffItems; let diffIndex = index">
+            <card-item [data]="diff"
+                       [dataIndex]="diffIndex"
+                       [type]="'diff'">
+            </card-item>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="'element'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <change-element [change]="data"></change-element>
+        <button (click)="showDiffs.emit(data)" class="btn btn-secondary btn-sm float-right">{{data.count}} Occurrences
+        </button>
+
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <!--        <div *ngIf="show" class="card-body">
+                  <app-diff [index]="dataIndex"
+                            [basePath]="data.base"
+                            [vectorized]="data.vectorized"
+                            [changes]="data.changes"
+                  ></app-diff>
+                </div>-->
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="'topic'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <span class="topic-percentage-label" [ngStyle]="{'background-color': getBackgroundGradient(data.percentage) }">{{data.percentage}} %</span>
+        <change-element [change]="data.obj"></change-element>
+        <button (click)="showDiffs.emit(data)" class="btn btn-secondary btn-sm float-right">{{data.count}} Occurrences
+        </button>
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <!--        <div *ngIf="show" class="card-body">
+                  <app-diff [index]="dataIndex"
+                            [basePath]="data.base"
+                            [vectorized]="data.vectorized"
+                            [changes]="data.changes"
+                  ></app-diff>
+                </div>-->
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="'documents'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <span class="topic-number">Topic {{data.topic}}</span>
+        <span class="topic-percentage-label" [ngStyle]="{'background-color': getBackgroundGradient(data.percentage) }">{{data.percentage}} %</span>
+        <!--
+                <button (click)="showDiffs.emit(data)" class="btn btn-secondary btn-sm float-right">{{data.count}} Occurrences</button>
+        -->
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <!--        <div *ngIf="show" class="card-body">
+                  <app-diff [index]="dataIndex"
+                            [basePath]="data.base"
+                            [vectorized]="data.vectorized"
+                            [changes]="data.changes"
+                  ></app-diff>
+                </div>-->
+      </div>
+    </div>
+  </div>
+
+  <div *ngSwitchCase="'word2vec'">
+    <div class="card">
+      <div class="card-header" (click)="toggleCollapse()">
+        <span class="word2vec-percentage-label"
+              [ngStyle]="{'background-color': getBackgroundGradientWord2vec(data.percentage) }">{{data.percentage}} %</span>
+        <change-element [change]="data.obj"></change-element>
+        <button (click)="showDiffs.emit(data.obj)" class="btn btn-secondary btn-sm float-right">{{data.count}}
+          Occurrences
+        </button>
+
+        <span [hidden]="collapse =='open'" class="fa fa-bars fa-lg"></span>
+        <span [hidden]="collapse =='closed'" class="fa fa-times fa-lg"></span>
+      </div>
+      <div class="collapse" [class.show]="show">
+        <!--        <div *ngIf="show" class="card-body">
+                  <app-diff [index]="dataIndex"
+                            [basePath]="data.base"
+                            [vectorized]="data.vectorized"
+                            [changes]="data.changes"
+                  ></app-diff>
+                </div>-->
+      </div>
+    </div>
+  </div>
+</div>
+

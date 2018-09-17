@@ -1,0 +1,28 @@
+<!-- Sidebar -->
+<sidebar-filter [diffs]="changes"
+                (onFiltering)="changes=$event"
+                (isLoading)="isLoading = $event">
+</sidebar-filter>
+
+<!-- /#sidebar-wrapper -->
+
+<!-- Page Content -->
+<div *ngIf="isLoading">
+  Loading Diffs ...
+</div>
+<div *ngIf="!isLoading">
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <h1>Results: {{elements.length}}</h1>
+      <div *ngFor="let element of elements; let changeIndex = index">
+        <card-item [data]="element"
+                   [dataIndex]="changeIndex"
+                   [type]="'element'"
+                   (showDiffs)="showDiffs($event)">
+        </card-item>
+
+      </div>
+    </div>
+  </div>
+</div>
+

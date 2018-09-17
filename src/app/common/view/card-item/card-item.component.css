@@ -1,0 +1,16 @@
+.topic-number{
+  background-color: rgba(91, 192, 190, 1);
+  color: white;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  border-radius: 3px;
+}
+.topic-percentage-label, .word2vec-percentage-label {
+  padding-right: 4px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+

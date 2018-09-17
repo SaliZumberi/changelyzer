@@ -1,0 +1,11 @@
+<div class="change-element-box">
+  <div class="change-element-index" (click)="showDiffs()">
+      {{change.index}}
+  </div>
+  <div class="change-element-vectors" >
+    <div class="change-element-vector" *ngFor="let element of change.unvectorized.split(' ')">
+      <element [element]="element">
+      </element>
+    </div>
+  </div>
+</div>
