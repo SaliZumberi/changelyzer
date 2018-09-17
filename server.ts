@@ -15,9 +15,8 @@ enableProdMode();
 
 // Express server
 const app = express();
-var cors = require('cors')
+const cors = require('cors');
 app.use(cors());
-
 const PORT = process.env.PORT || 8080;
 const DIST_FOLDER = join(process.cwd(), 'dist');
 
