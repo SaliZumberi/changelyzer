@@ -7,6 +7,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, forkJoin, Observable} from 'rxjs';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {map} from 'rxjs/operators';
+import {Diff} from '../data/models/diff';
 
 declare var require: any;
 
@@ -17,15 +18,8 @@ export class DataService {
     S3_API = 'https://s3.eu-central-1.amazonaws.com/changelyzer/';
     LOCAL_API = '../../../assets/json/';
 
-    diffsSubscription = new BehaviorSubject([]);
+    diffsSubscription = new BehaviorSubject<Diff[]>([]);
     diffs$ = this.diffsSubscription.asObservable();
-
-    diffsWhatSubscription = new BehaviorSubject([]);
-    diffsWhat$ = this.diffsWhatSubscription.asObservable();
-
-    diffsWhereSubscription = new BehaviorSubject([]);
-    diffsWhere$ = this.diffsWhereSubscription.asObservable();
-
 
     changesSubscription = new BehaviorSubject([]);
     changes$ = this.changesSubscription.asObservable();
@@ -71,15 +65,20 @@ export class DataService {
             elementsSource = this.getFile('elements');
         }
         forkJoin([diffsSource, changesSource, elementsSource]).subscribe(results => {
-            let diffs = JSON.parse(results[0]);
-            let diffsWhere = JSON.parse(require('../../../assets/json/diffs_where.json'));
-            let diffsWhat = JSON.parse(require('../../../assets/json/diffs_what.json'));
+            console.log('BigdataMode: ' + bigDataMode);
 
             let changes = JSON.parse(results[1]);
-            let changesWhere = JSON.parse(require('../../../assets/json/changes_where.json'));
-            let changesWhat = JSON.parse(require('../../../assets/json/changes_what.json'));
+            const changesWhere = JSON.parse(require('../../../assets/json/changes_where.json'));
+            const changesWhat = JSON.parse(require('../../../assets/json/changes_what.json'));
 
             let elements = JSON.parse(results[2]);
+
+            const diffs: Diff[] = JSON.parse(results[0]);
+
+            // const diffsWhere = this.getDiffWhere(diffs, changes, changesWhere); //JSON.parse(require('../../../assets/json/diffs_where.json'));
+            // const diffsWhat = this.getDiffWhat(diffs, changes, changesWhat); //JSON.parse(require('../../../assets/json/diffs_what.json'));
+            console.log('fetched successfully, start mapping of diffs');
+
 
             if (bigDataMode) {
                 changes[0].vectorized = '';
@@ -87,23 +86,30 @@ export class DataService {
             }
             console.log('fetched successfully, start mapping of diffs');
             diffs.forEach(diff => {
+                diff.vectorizedWhat = diff.vectorized.split(' ').map(stringVector => {
+                    return changes[parseInt(stringVector, 10)].what;
+                });
+                diff.changesWhat = diff.vectorizedWhat.map(whatVector => {
+                    return changesWhere[whatVector];
+                });
+
+                diff.vectorizedWhere = diff.vectorized.split(' ').map(stringVector => {
+                    return changes[parseInt(stringVector, 10)].where;
+                });
+                diff.changesWhere = diff.vectorizedWhere.map(whatVector => {
+                    return changesWhere[whatVector];
+                });
                 diff.vectorized = this.getVectorArray(diff.vectorized);
                 diff.changes = this.getChangesForVector(diff.vectorized, changes);
+                // console.log(diff.changes);
             });
-            diffsWhat.forEach(diff => {
-                diff.vectorized = this.getVectorArray(diff.vectorized);
-                diff.changes = this.getChangesForVector(diff.vectorized, changesWhat);
-            });
-            diffsWhere.forEach(diff => {
-                diff.vectorized = this.getVectorArray(diff.vectorized);
-                diff.changes = this.getChangesForVector(diff.vectorized, changesWhere);
-            });
+
             console.log('counts changes ');
             this.countAllElements(diffs, changes, elements);
 
             console.log('count elements ');
             this.countAllChanges(diffs, changes);
-            //this.countAllDiffs(diffs);
+            // this.countAllDiffs(diffs);
 
 
             /*      this.changes.forEach(change => {
@@ -130,9 +136,6 @@ export class DataService {
             //Fire up everything..
 
             this.diffsSubscription.next(diffs);
-            this.diffsWhatSubscription.next(diffsWhat);
-            this.diffsWhereSubscription.next(diffsWhere);
-
 
             this.changesSubscription.next(changes);
             this.changesWhatSubscription.next(changesWhat);
@@ -142,6 +145,32 @@ export class DataService {
 
         });
 
+    }
+
+    getDiffWhere(diffs, changes: Change[], changesWhere: Change[]) {
+        const diffsWhere: any[] = _.cloneDeep(diffs);
+        diffsWhere.forEach(diff => {
+            diff.vectorized = diff.vectorized.split(' ').map(stringVector => {
+                return changes[parseInt(stringVector, 10)].where;
+            });
+            diff.changes = diff.vectorized.map(whatVector => {
+                return changesWhere[whatVector];
+            });
+        });
+        return diffsWhere;
+    }
+
+    getDiffWhat(diffs, changes: Change[], changesWhat: Change[]) {
+        const diffsWhat: any[] = _.cloneDeep(diffs);
+        diffsWhat.forEach(diff => {
+            diff.vectorized = diff.vectorized.split(' ').map(stringVector => {
+                return changes[parseInt(stringVector, 10)].what;
+            });
+            diff.changes = diff.vectorized.map(whatVector => {
+                return changesWhat[whatVector];
+            });
+        });
+        return diffsWhat;
     }
 
     getVectorArray(vector: string): number[] {
@@ -258,24 +287,8 @@ export class DataService {
         return docs;
     }
 
-    getDiffs(minSize, maxSize) {
+    getDiffs(minSize, maxSize): Observable<Diff[]> {
         return this.diffs$.pipe(map((diffs: any) => diffs.filter(diff => {
-            return (diff.changes.length >= minSize) && (diff.changes.length <= maxSize);
-        })), map(diffs => {
-            return _.sortBy(diffs, 'count').reverse();
-        }));
-    }
-
-    getDiffsWhat(minSize, maxSize) {
-        return this.diffsWhat$.pipe(map((diffs: any) => diffs.filter(diff => {
-            return (diff.changes.length >= minSize) && (diff.changes.length <= maxSize);
-        })), map(diffs => {
-            return _.sortBy(diffs, 'count').reverse();
-        }));
-    }
-
-    getDiffsWhere(minSize, maxSize) {
-        return this.diffsWhere$.pipe(map((diffs: any) => diffs.filter(diff => {
             return (diff.changes.length >= minSize) && (diff.changes.length <= maxSize);
         })), map(diffs => {
             return _.sortBy(diffs, 'count').reverse();
@@ -305,7 +318,7 @@ export class DataService {
 
     getLdaTopics(numberOfTopics: number): Topic[] {
         let topics = [];
-        if (numberOfTopics == 40) {
+        if (numberOfTopics === 40) {
             topics = this.ldaTopics40;
         } else {
             topics = this.ldaTopics;
@@ -317,7 +330,7 @@ export class DataService {
     }
 
     getLdaDocs(numberOfTopics: number): Topic[] {
-        if (numberOfTopics == 40) {
+        if (numberOfTopics === 40) {
             return this.ldaDocs40;
         } else {
             return this.ldaTopics;
