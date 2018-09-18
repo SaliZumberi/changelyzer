@@ -39,6 +39,7 @@
           </pager>
           <div *ngFor="let diff of pagedDiffItems; let diffIndex = index">
             <card-item [data]="diff"
+                       [selectedChangeType]="selectedChangeType"
                        [dataIndex]="diffIndex"
                        [type]="'diff'">
             </card-item>
