@@ -15,8 +15,6 @@ export class ChangesOverviewComponent implements OnInit {
 
 
   diffs: any[];
-  diffsWhat: any[];
-  diffsWhere: any[];
 
   changes: Change[];
   changesWhat: any[];
@@ -36,10 +34,8 @@ export class ChangesOverviewComponent implements OnInit {
   ngOnInit() {
     this.isLoading = true;
 
-    this.requestDataFromMultipleSources().subscribe(([diffs, diffsWhat, diffsWhere, changes, changesWhat, changesWhere]) => {
+    this.requestDataFromMultipleSources().subscribe(([diffs, changes, changesWhat, changesWhere]) => {
       this.diffs = diffs;
-      this.diffsWhat = diffsWhat;
-      this.diffsWhere = diffsWhere;
       this.changes = <Change[]> changes;
       this.changesWhat = <Change[]> changesWhat;
       this.changesWhere = <Change[]> changesWhere;
@@ -51,7 +47,7 @@ export class ChangesOverviewComponent implements OnInit {
   getChangeFromText(element: string) {
     let splitted = element.split(' - ');
     return this.changes.find(change => {
-      return parseInt(splitted[0], 10) == change.index;
+      return parseInt(splitted[0], 10) === change.index;
     });
   }
 
@@ -67,8 +63,6 @@ export class ChangesOverviewComponent implements OnInit {
   public requestDataFromMultipleSources(): Observable<any[]> {
     return combineLatest([
       this.dataService.getDiffs(0, 1),
-      this.dataService.getDiffsWhat(0, 1),
-      this.dataService.getDiffsWhere(0, 1),
       this.dataService.getChanges(),
       this.dataService.getChangesWhat(),
       this.dataService.getChangesWhere()]);
