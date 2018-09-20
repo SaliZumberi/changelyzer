@@ -73,8 +73,12 @@ export class DataService {
 
             let elements = JSON.parse(results[2]);
 
-            const diffs: Diff[] = JSON.parse(results[0]);
-
+           // const diffs: Diff[] = JSON.parse(results[0]);
+            const diffs = JSON.parse(require('../../../assets/json/diffs/diffs_base.json'));
+            const diffsVectorized = JSON.parse(require('../../../assets/json/diffs/diffs_vectorized.json'));
+            //   const diffsMultiAll = JSON.parse(require('../../../assets/json/changes_where.json'));
+            const diffsMultiWhat = JSON.parse(require('../../../assets/json/changes_where.json'));
+            //    const diffsMultiWhere = JSON.parse(require('../../../assets/json/changes_where.json'));
             // const diffsWhere = this.getDiffWhere(diffs, changes, changesWhere); //JSON.parse(require('../../../assets/json/diffs_where.json'));
             // const diffsWhat = this.getDiffWhat(diffs, changes, changesWhat); //JSON.parse(require('../../../assets/json/diffs_what.json'));
             console.log('fetched successfully, start mapping of diffs');
@@ -84,22 +88,23 @@ export class DataService {
                 changes[0].vectorized = '';
                 changes[0].unvectorized = '';
             }
+
             console.log('fetched successfully, start mapping of diffs');
-            diffs.forEach(diff => {
-                diff.vectorizedWhat = diff.vectorized.split(' ').map(stringVector => {
+            diffs.forEach((diff, index) => {
+                diff.vectorizedWhat = diffsVectorized[index].vectorized.split(' ').map(stringVector => {
                     return changes[parseInt(stringVector, 10)].what;
                 });
                 diff.changesWhat = diff.vectorizedWhat.map(whatVector => {
                     return changesWhere[whatVector];
                 });
 
-                diff.vectorizedWhere = diff.vectorized.split(' ').map(stringVector => {
+                diff.vectorizedWhere = diffsVectorized[index].vectorized.split(' ').map(stringVector => {
                     return changes[parseInt(stringVector, 10)].where;
                 });
                 diff.changesWhere = diff.vectorizedWhere.map(whatVector => {
                     return changesWhere[whatVector];
                 });
-                diff.vectorized = this.getVectorArray(diff.vectorized);
+                diff.vectorized = this.getVectorArray(diffsVectorized[index].vectorized);
                 diff.changes = this.getChangesForVector(diff.vectorized, changes);
                 // console.log(diff.changes);
             });

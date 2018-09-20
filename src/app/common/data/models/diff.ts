@@ -3,8 +3,8 @@ import {Change} from './change';
 export interface Diff {
     index: number;
     unvectorized?: string;
-    vectorized?: number[] | any;
     base: string;
+    vectorized?: number[] | any;
     vectorizedWhat?: number[];
     vectorizedWhere?: number[];
     changes: Change[];
